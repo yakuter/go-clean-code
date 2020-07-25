@@ -3,17 +3,9 @@ package post
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	"github.com/yakuter/go-clean-code/pkg/model"
 )
-
-type PostRepository interface {
-	Test()
-	All() ([]*model.Post, error)
-	FindByID(id uint) (*model.Post, error)
-	Save(post *model.Post) (*model.Post, error)
-	Delete(id uint) error
-	Migrate() error
-}
 
 // Repository ...
 type Repository struct {
@@ -23,17 +15,17 @@ type Repository struct {
 // NewRepository ...
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		db: db
+		db: db,
 	}
 }
 
 // All ...
-func (p *Repository) Test(){
+func (p *Repository) Test() {
 	fmt.Println("erhan")
 }
 
 // All ...
-func (p *Repository) All() ([]*model.Post, error) {
+func (p *Repository) All() ([]model.Post, error) {
 	posts := []model.Post{}
 	err := p.db.Find(&posts).Error
 	return posts, err

@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/yakuter/go-clean-code/pkg/api"
+	"github.com/yakuter/go-clean-code/pkg/repository/post"
 )
 
 // App is alias for api.App{}
@@ -45,8 +45,10 @@ func (a *App) initialize(host, port, username, password, dbname string) {
 
 	a.DB, err = gorm.Open("postgres", connectionString)
 	if err != nil {
-		log.Fatalf("could not open postgresql connection: %w", err)
+		log.Fatal(err)
 	}
+
+	// repository := post.NewRepository(a.DB)
 
 	a.Router = mux.NewRouter()
 }
@@ -57,7 +59,19 @@ func (a *App) run(addr string) {
 }
 
 func (a *App) routes() {
-	api := api.API{}
-	api.DB = a.DB
-	a.Router.HandleFunc("/post/{id:[0-9]+}", api.GetPost).Methods("GET")
+	postAPI := InitPostAPI(a.DB)
+	a.Router.HandleFunc("/posts", postAPI.FindAllPosts()).Methods("GET")
+	a.Router.HandleFunc("/posts", postAPI.CreatePost()).Methods("POST")
+	a.Router.HandleFunc("/posts/{id:[0-9]+}", postAPI.FindByID()).Methods("GET")
+	a.Router.HandleFunc("/posts/{id:[0-9]+}", postAPI.UpdatePost()).Methods("PUT")
+	a.Router.HandleFunc("/posts/{id:[0-9]+}", postAPI.DeletePost()).Methods("DELETE")
+}
+
+// InitPostAPI ..
+func InitPostAPI(db *gorm.DB) post.PostAPI {
+	postRepository := post.NewRepository(db)
+	postService := post.NewPostService(postRepository)
+	postAPI := post.NewPostAPI(postService)
+	postAPI.Migrate()
+	return postAPI
 }
