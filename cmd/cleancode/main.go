@@ -10,7 +10,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/yakuter/go-clean-code/pkg/api"
 	"github.com/yakuter/go-clean-code/pkg/repository/post"
+	"github.com/yakuter/go-clean-code/pkg/service"
 )
 
 // App is alias for api.App{}
@@ -68,10 +70,10 @@ func (a *App) routes() {
 }
 
 // InitPostAPI ..
-func InitPostAPI(db *gorm.DB) post.PostAPI {
+func InitPostAPI(db *gorm.DB) api.PostAPI {
 	postRepository := post.NewRepository(db)
-	postService := post.NewPostService(postRepository)
-	postAPI := post.NewPostAPI(postService)
+	postService := service.NewPostService(postRepository)
+	postAPI := api.NewPostAPI(postService)
 	postAPI.Migrate()
 	return postAPI
 }

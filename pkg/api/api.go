@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -152,5 +153,13 @@ func (p PostAPI) DeletePost() http.HandlerFunc {
 			Message: "Post deleted successfully!",
 		}
 		RespondWithJSON(w, http.StatusOK, response)
+	}
+}
+
+// Migrate ...
+func (p PostAPI) Migrate() {
+	err := p.PostService.Migrate()
+	if err != nil {
+		log.Println(err)
 	}
 }

@@ -7,11 +7,11 @@ import (
 
 // PostService ...
 type PostService struct {
-	PostRepository post.Repository
+	PostRepository *post.Repository
 }
 
 // NewPostService ...
-func NewPostService(p post.Repository) PostService {
+func NewPostService(p *post.Repository) PostService {
 	return PostService{PostRepository: p}
 }
 
