@@ -7,15 +7,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 
 	"github.com/yakuter/go-clean-code/pkg/model"
 	"github.com/yakuter/go-clean-code/pkg/service"
 )
-
-type API struct {
-	DB *gorm.DB
-}
 
 // PostAPI ...
 type PostAPI struct {
